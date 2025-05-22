@@ -1,0 +1,14 @@
+#pragma once
+
+#define MATRIX_ROWS 10
+#define MATRIX_COLS 6
+#define MATRIX_COL_PUSHED_STATES {0,1,0,0,0,0}
+
+#define EE_HANDS
+#define SERIAL_USART_FULL_DUPLEX
+#define SERIAL_USART_TX_PIN GP24
+#define SERIAL_USART_RX_PIN GP25
+#define SERIAL_USART_PIN_SWAP
+
+// #define SERIAL_DEBUG
+// #define DEBUG_MATRIX_SCAN_RATE
