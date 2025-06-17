@@ -1,0 +1,396 @@
+{
+    "$schema": "https://raw.githubusercontent.com/qmk/qmk_firmware/refs/heads/master/data/schemas/keyboard.jsonschema",
+
+    "keyboard_name": "luo2",
+    "maintainer": "gosm-company",
+    "manufacturer": "gosm-company",
+    "url": "https://luo.onl",
+    "processor": "RP2040",
+    "bootloader": "rp2040",
+    "usb": {
+        "device_version": "1.0.0",
+        "pid": "0x1234",
+        "vid": "0x1234"
+    },
+
+    "split": {
+        "enabled": true,
+        "transport": {
+            "protocol": "serial"
+        }
+    },
+
+    "matrix_pins": {
+        "custom": true,
+        "custom_lite": true,
+        "rows": ["GP4", "GP3", "GP2", "GP1", "GP0"],
+        "cols": ["GP10", "GP9", "GP8", "GP7", "GP6", "GP5"]
+    },
+
+    "layouts": {
+        "LAYOUT": {
+            "layout": [
+                {
+                    "label": "left 0 east",
+                    "matrix": [0, 0],
+                    "x": 2,
+                    "y": 3
+                },
+                {
+                    "label": "left 0 center",
+                    "matrix": [0, 1],
+                    "x": 1,
+                    "y": 3
+                },
+                {
+                    "label": "left 0 south1",
+                    "matrix": [0, 2],
+                    "x": 1,
+                    "y": 4
+                },
+                {
+                    "label": "left 0 north",
+                    "matrix": [0, 3],
+                    "x": 1,
+                    "y": 2
+                },
+                {
+                    "label": "left 0 west",
+                    "matrix": [0, 4],
+                    "x": 0,
+                    "y": 3
+                },
+                {
+                    "label": "left 0 south2",
+                    "matrix": [0, 5],
+                    "x": 1,
+                    "y": 5
+                },
+                {
+                    "label": "left 1 east",
+                    "matrix": [1, 0],
+                    "x": 5,
+                    "y": 2
+                },
+                {
+                    "label": "left 1 center",
+                    "matrix": [1, 1],
+                    "x": 4,
+                    "y": 2
+                },
+                {
+                    "label": "left 1 south1",
+                    "matrix": [1, 2],
+                    "x": 4,
+                    "y": 3
+                },
+                {
+                    "label": "left 1 north",
+                    "matrix": [1, 3],
+                    "x": 4,
+                    "y": 1
+                },
+                {
+                    "label": "left 1 west",
+                    "matrix": [1, 4],
+                    "x": 3,
+                    "y": 2
+                },
+                {
+                    "label": "left 1 south2",
+                    "matrix": [1, 5],
+                    "x": 4,
+                    "y": 4
+                },
+                {
+                    "label": "left 2 east",
+                    "matrix": [2, 0],
+                    "x": 8,
+                    "y": 1
+                },
+                {
+                    "label": "left 2 center",
+                    "matrix": [2, 1],
+                    "x": 7,
+                    "y": 1
+                },
+                {
+                    "label": "left 2 south1",
+                    "matrix": [2, 2],
+                    "x": 7,
+                    "y": 2
+                },
+                {
+                    "label": "left 2 north",
+                    "matrix": [2, 3],
+                    "x": 7,
+                    "y": 0
+                },
+                {
+                    "label": "left 2 west",
+                    "matrix": [2, 4],
+                    "x": 6,
+                    "y": 1
+                },
+                {
+                    "label": "left 2 south2",
+                    "matrix": [2, 5],
+                    "x": 7,
+                    "y": 3
+                },
+                {
+                    "label": "left 3 east",
+                    "matrix": [3, 0],
+                    "x": 11,
+                    "y": 2
+                },
+                {
+                    "label": "left 3 center",
+                    "matrix": [3, 1],
+                    "x": 10,
+                    "y": 2
+                },
+                {
+                    "label": "left 3 south1",
+                    "matrix": [3, 2],
+                    "x": 10,
+                    "y": 3
+                },
+                {
+                    "label": "left 3 north",
+                    "matrix": [3, 3],
+                    "x": 10,
+                    "y": 1
+                },
+                {
+                    "label": "left 3 west",
+                    "matrix": [3, 4],
+                    "x": 9,
+                    "y": 2
+                },
+                {
+                    "label": "left 3 south2",
+                    "matrix": [3, 5],
+                    "x": 10,
+                    "y": 4
+                },
+                {
+                    "label": "left 4 northeast",
+                    "matrix": [4, 0],
+                    "x": 13,
+                    "y": 4
+                },
+                {
+                    "label": "left 4 center",
+                    "matrix": [4, 1],
+                    "x": 13,
+                    "y": 4
+                },
+                {
+                    "label": "left 4 northwest",
+                    "matrix": [4, 2],
+                    "x": 14,
+                    "y": 5
+                },
+                {
+                    "label": "left 4 southeast",
+                    "matrix": [4, 3],
+                    "x": 14,
+                    "y": 3
+                },
+                {
+                    "label": "left 4 southwest",
+                    "matrix": [4, 4],
+                    "x": 12,
+                    "y": 3
+                },
+                {
+                    "label": "left 4 notused",
+                    "matrix": [4, 5],
+                    "x": 12,
+                    "y": 5
+                },
+                {
+                    "label": "right 0 northeast",
+                    "matrix": [5, 0],
+                    "x": 17,
+                    "y": 4
+                },
+                {
+                    "label": "right 0 center",
+                    "matrix": [5, 1],
+                    "x": 17,
+                    "y": 4
+                },
+                {
+                    "label": "right 0 northwest",
+                    "matrix": [5, 2],
+                    "x": 18,
+                    "y": 5
+                },
+                {
+                    "label": "right 0 southeast",
+                    "matrix": [5, 3],
+                    "x": 18,
+                    "y": 3
+                },
+                {
+                    "label": "right 0 southwest",
+                    "matrix": [5, 4],
+                    "x": 16,
+                    "y": 3
+                },
+                {
+                    "label": "right 0 notused",
+                    "matrix": [5, 5],
+                    "x": 16,
+                    "y": 5
+                },
+                {
+                    "label": "right 1 east",
+                    "matrix": [6, 0],
+                    "x": 21,
+                    "y": 2
+                },
+                {
+                    "label": "right 1 center",
+                    "matrix": [6, 1],
+                    "x": 20,
+                    "y": 2
+                },
+                {
+                    "label": "right 1 south1",
+                    "matrix": [6, 2],
+                    "x": 20,
+                    "y": 3
+                },
+                {
+                    "label": "right 1 north",
+                    "matrix": [6, 3],
+                    "x": 20,
+                    "y": 1
+                },
+                {
+                    "label": "right 1 west",
+                    "matrix": [6, 4],
+                    "x": 19,
+                    "y": 2
+                },
+                {
+                    "label": "right 1 south2",
+                    "matrix": [6, 5],
+                    "x": 20,
+                    "y": 4
+                },
+                {
+                    "label": "right 2 east",
+                    "matrix": [7, 0],
+                    "x": 24,
+                    "y": 1
+                },
+                {
+                    "label": "right 2 center",
+                    "matrix": [7, 1],
+                    "x": 23,
+                    "y": 1
+                },
+                {
+                    "label": "right 2 south1",
+                    "matrix": [7, 2],
+                    "x": 23,
+                    "y": 2
+                },
+                {
+                    "label": "right 2 north",
+                    "matrix": [7, 3],
+                    "x": 23,
+                    "y": 0
+                },
+                {
+                    "label": "right 2 west",
+                    "matrix": [7, 4],
+                    "x": 22,
+                    "y": 1
+                },
+                {
+                    "label": "right 2 south2",
+                    "matrix": [7, 5],
+                    "x": 23,
+                    "y": 3
+                },
+                {
+                    "label": "right 3 east",
+                    "matrix": [8, 0],
+                    "x": 27,
+                    "y": 2
+                },
+                {
+                    "label": "right 3 center",
+                    "matrix": [8, 1],
+                    "x": 26,
+                    "y": 2
+                },
+                {
+                    "label": "right 3 south1",
+                    "matrix": [8, 2],
+                    "x": 26,
+                    "y": 3
+                },
+                {
+                    "label": "right 3 north",
+                    "matrix": [8, 3],
+                    "x": 26,
+                    "y": 1
+                },
+                {
+                    "label": "right 3 west",
+                    "matrix": [8, 4],
+                    "x": 25,
+                    "y": 2
+                },
+                {
+                    "label": "right 3 south2",
+                    "matrix": [8, 5],
+                    "x": 26,
+                    "y": 4
+                },
+                {
+                    "label": "right 4 east",
+                    "matrix": [9, 0],
+                    "x": 30,
+                    "y": 3
+                },
+                {
+                    "label": "right 4 center",
+                    "matrix": [9, 1],
+                    "x": 29,
+                    "y": 3
+                },
+                {
+                    "label": "right 4 south1",
+                    "matrix": [9, 2],
+                    "x": 29,
+                    "y": 4
+                },
+                {
+                    "label": "right 4 north",
+                    "matrix": [9, 3],
+                    "x": 29,
+                    "y": 2
+                },
+                {
+                    "label": "right 4 west",
+                    "matrix": [9, 4],
+                    "x": 28,
+                    "y": 3
+                },
+                {
+                    "label": "right 4 south2",
+                    "matrix": [9, 5],
+                    "x": 29,
+                    "y": 5
+                }
+            ]
+        }
+    }
+}
