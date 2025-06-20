@@ -1,4 +1,5 @@
-CONSOLE_ENABLE = yes
 SRC += matrix.c
 
 SERIAL_DRIVER = vendor
+CONSOLE_ENABLE = yes
+BOOTMAGIC_ENABLE = yes
