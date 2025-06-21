@@ -2,4 +2,4 @@ SRC += matrix.c
 
 SERIAL_DRIVER = vendor
 CONSOLE_ENABLE = yes
-BOOTMAGIC_ENABLE = yes
+BOOTMAGIC_ENABLE = no
