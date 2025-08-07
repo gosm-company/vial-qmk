@@ -1,3 +1,6 @@
+MOUSEKEY_ENABLE =  yes
+EXTRAKEY_ENABLE = yes
+
 VIA_ENABLE = yes
 VIAL_ENABLE = yes
 
