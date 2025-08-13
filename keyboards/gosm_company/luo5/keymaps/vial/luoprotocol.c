@@ -22,9 +22,18 @@ void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
             break;
 
         case LUO_CMD_GET_STATE:
+            // memory layout
+            // 0-1: layer_state
+            // 2-12: matrix state
+            // 13: mods
+            // 14: oneshot_mods
+
             uint16_t state = layer_state | default_layer_state;
             data[0] = (state >> 8) & 0xFF;
             data[1] = state & 0xFF;
+            data[13] = get_mods() & 0xFF;
+            data[14] = get_oneshot_mods() & 0xFF;
+
             // modified quantum/via.c:250
             if (!vial_unlocked)
                 break;
@@ -34,9 +43,6 @@ void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
                 data[i++] = value & 0xFF;
             }
 
-            // used bytes: 0-12
-            // 0-1: layer_state
-            // 2-12: matrix state
             break;
     }
 }
