@@ -12,21 +12,19 @@
         "pid": "0x1234",
         "vid": "0x1234"
     },
-
     "split": {
         "enabled": true,
         "transport": {
             "protocol": "serial"
         }
     },
-
     "matrix_pins": {
         "custom": true,
         "custom_lite": true,
         "rows": ["GP9", "GP8", "GP7", "GP6", "GP5"],
         "cols": ["GP10", "GP11", "GP12", "GP13", "GP14", "GP15"]
     },
-
+    "bootmagic": { "enabled": false },
     "layouts": {
         "LAYOUT": {
             "layout": [
