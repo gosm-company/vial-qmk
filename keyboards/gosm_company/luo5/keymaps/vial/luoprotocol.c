@@ -14,14 +14,18 @@
 #define LUO_CMD_GET_STATE 0x01
 #define LUO_CMD_GET_LAYER_NAME 0x02
 #define LUO_CMD_SET_LAYER_NAME 0x03
+#define LUO_CMD_GET_KEYMAP_NAME 0x04
+#define LUO_CMD_SET_KEYMAP_NAME 0x05
 
+#define LUO_CONFIG_INIT_MAGIC 123456789
 #define LUO_LAYER_COUNT 16
 #define LUO_LAYER_NAME_SIZE 28
-#define LUO_CONFIG_INIT_MAGIC 123456789
+#define LUO_KEYMAP_NAME_SIZE 28
 
 struct luo_config_t {
     uint32_t init_magic;
     char layer_names[LUO_LAYER_COUNT][LUO_LAYER_NAME_SIZE];
+    char keymap_name[LUO_KEYMAP_NAME_SIZE];
 };
 
 struct luo_config_t luo_config;
@@ -34,6 +38,9 @@ void keyboard_post_init_kb() {
             memset(luo_config.layer_names[i],0,LUO_LAYER_NAME_SIZE);
             strcpy(luo_config.layer_names[i],"noname");
         }
+
+        memset(luo_config.keymap_name,0,LUO_KEYMAP_NAME_SIZE);
+        strcpy(luo_config.keymap_name,"default");
     }
     eeconfig_update_kb_datablock(&luo_config);
 }
@@ -97,6 +104,17 @@ void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
         case LUO_CMD_SET_LAYER_NAME:
             layer_index = data[2];
             memcpy(&luo_config.layer_names[layer_index],&data[3],LUO_LAYER_NAME_SIZE);
+            eeconfig_update_kb_datablock(&luo_config);
+            break;
+
+        case LUO_CMD_GET_KEYMAP_NAME:
+            // memory layout
+            // 0-27:    keymap_name
+            memcpy(&data[0],&luo_config.keymap_name,LUO_KEYMAP_NAME_SIZE);
+            break;
+
+        case LUO_CMD_SET_KEYMAP_NAME:
+            memcpy(&luo_config.keymap_name,&data[2],LUO_KEYMAP_NAME_SIZE);
             eeconfig_update_kb_datablock(&luo_config);
             break;
     }
