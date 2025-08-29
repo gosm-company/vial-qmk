@@ -52,11 +52,9 @@ matrix_row_t read_row(void) {
     return row;
 }
 
-__attribute__((weak)) void on_matrix_changed(matrix_row_t matrix[]) {}
 
 bool matrix_scan_custom(matrix_row_t current_matrix[]) {
     bool changed = false;
-
     for (int row = 0; row < MATRIX_ROWS; row++) {
         pin_t row_pin = row_pins[row];
         setPinOutput_writeLow(row_pin);
@@ -69,11 +67,6 @@ bool matrix_scan_custom(matrix_row_t current_matrix[]) {
 
         wait_us(100);
     }
-
-    if(changed) {
-        on_matrix_changed(current_matrix);
-    }
-
     return changed;
 }
 

@@ -6,6 +6,8 @@
 #include "via.h"
 #include "vial.h"
 #include "hardware/flash.h"
+#include "matrix.h"
+#include "timer.h"
 
 #define LUO_PROTOCOL_VERSION 0x01
 
@@ -106,43 +108,47 @@ void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
     }
 }
 
+static uint16_t broadcast_timer;
+#define BROADCAST_TIMEOUT 16
+
+static uint8_t broadcast_data_old[32];
 static uint8_t broadcast_data[32];
 
 static void broadcast(void) {
-    broadcast_data[0] = LUO_PREFIX & 0xFF;
-    broadcast_data[1] = LUO_CMD_BROADCAST & 0xFF;
-    raw_hid_send(broadcast_data,32);
-}
-
-void on_matrix_changed(matrix_row_t matrix[]) {
-    if(!broadcast_flag) {
-        return;
-    }
-
     // start:   modified quantum/via.c:250
     if (!vial_unlocked)
         return;
 
     uint8_t i = 2;
     for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
-        matrix_row_t value = matrix[row];
+        matrix_row_t value = matrix_get_row(row);
         broadcast_data[i++] = value & 0xFF;
-        if(row==4){
-            uprintf("%u\n",value);
-        }
     }
     // end
-    broadcast();
-}
 
-void post_process_record_kb(uint16_t keycode, keyrecord_t* record) {
-    if(!broadcast_flag) {
-        return;
-    }
+    broadcast_data[0] = LUO_PREFIX & 0xFF;
+    broadcast_data[1] = LUO_CMD_BROADCAST & 0xFF;
+
     uint16_t state = layer_state | default_layer_state;
     broadcast_data[13] = (state >> 8) & 0xFF;
     broadcast_data[14] = state & 0xFF;
     broadcast_data[15] = get_mods() & 0xFF;
     broadcast_data[16] = get_oneshot_mods() & 0xFF;
-    broadcast();
+
+    if(memcmp(broadcast_data_old,broadcast_data,32)==0) {
+        return;
+    }
+    memcpy(broadcast_data_old,broadcast_data,32);
+    raw_hid_send(broadcast_data,32);
+}
+
+void housekeeping_task_kb(void) {
+    if(!broadcast_flag) {
+        return;
+    }
+
+    if(timer_elapsed(broadcast_timer) > BROADCAST_TIMEOUT) {
+        broadcast();
+        broadcast_timer = timer_read();
+    }
 }
