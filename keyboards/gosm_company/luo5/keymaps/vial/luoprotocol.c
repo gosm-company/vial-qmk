@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "raw_hid.h"
 #include "quantum.h"
 #include "eeconfig.h"
 #include "via.h"
@@ -10,15 +11,18 @@
 
 #define LUO_PREFIX 0xfd
 
-#define LUO_CMD_GET_VERSION 0x00
-#define LUO_CMD_GET_STATE 0x01
-#define LUO_CMD_GET_LAYER_NAME 0x02
-#define LUO_CMD_SET_LAYER_NAME 0x03
-#define LUO_CMD_GET_KEYMAP_NAME 0x04
-#define LUO_CMD_SET_KEYMAP_NAME 0x05
+#define LUO_CMD_GET_VERSION 0x01
+#define LUO_CMD_GET_FLAG 0x02
+#define LUO_CMD_SET_FLAG 0x03
+#define LUO_CMD_GET_LAYER_NAME 0x04
+#define LUO_CMD_SET_LAYER_NAME 0x05
+#define LUO_CMD_GET_KEYMAP_NAME 0x06
+#define LUO_CMD_SET_KEYMAP_NAME 0x07
+#define LUO_CMD_BROADCAST 0x08
 
-#define LUO_CONFIG_INIT_MAGIC 123456789
+#define LUO_CONFIG_INIT_MAGIC 20250810
 #define LUO_LAYER_COUNT 16
+#define LUO_PRACTICE_LAYER 15
 #define LUO_LAYER_NAME_SIZE 28
 #define LUO_KEYMAP_NAME_SIZE 28
 
@@ -29,6 +33,8 @@ struct luo_config_t {
 };
 
 struct luo_config_t luo_config;
+uint8_t broadcast_flag = 0;
+uint8_t practice_flag = 0;
 
 void keyboard_post_init_kb() {
     eeconfig_read_kb_datablock(&luo_config);
@@ -58,47 +64,29 @@ void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
 
     switch (data[1]) {
         case LUO_CMD_GET_VERSION:
-            // memory layout
-            // 0:       protocol version
-            // 1-8:     hardware_id
-
             uint8_t version = LUO_PROTOCOL_VERSION;
-            data[0] = version & 0xFF;
-
-            flash_get_unique_id(&data[1]);
+            data[2] = version;
+            flash_get_unique_id(&data[3]);
             break;
 
-        case LUO_CMD_GET_STATE:
-            // memory layout
-            // 0-1:     layer_state
-            // 2-12:    matrix state
-            // 13:      mods
-            // 14:      oneshot_mods
+        case LUO_CMD_GET_FLAG:
+            data[2] = broadcast_flag;
+            data[3] = practice_flag;
+            break;
 
-            uint16_t state = layer_state | default_layer_state;
-            data[0] = (state >> 8) & 0xFF;
-            data[1] = state & 0xFF;
-            data[13] = get_mods() & 0xFF;
-            data[14] = get_oneshot_mods() & 0xFF;
-
-            // modified quantum/via.c:250
-            if (!vial_unlocked)
-                break;
-            uint8_t i = 2;
-            for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
-                matrix_row_t value = matrix_get_row(row);
-                data[i++] = value & 0xFF;
+        case LUO_CMD_SET_FLAG:
+            broadcast_flag = data[2];
+            practice_flag = data[3];
+            if(practice_flag){
+                layer_on(LUO_PRACTICE_LAYER);
+            }else{
+                layer_off(LUO_PRACTICE_LAYER);
             }
             break;
 
         case LUO_CMD_GET_LAYER_NAME:
-            // memory layout
-            // 0:       layer index
-            // 1-29:    layer name
-
             uint8_t layer_index = data[2];
-            data[0]=layer_index;
-            memcpy(&data[1],&luo_config.layer_names[layer_index],LUO_LAYER_NAME_SIZE);
+            memcpy(&data[3],&luo_config.layer_names[layer_index],LUO_LAYER_NAME_SIZE);
             break;
 
         case LUO_CMD_SET_LAYER_NAME:
@@ -108,9 +96,7 @@ void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
             break;
 
         case LUO_CMD_GET_KEYMAP_NAME:
-            // memory layout
-            // 0-27:    keymap_name
-            memcpy(&data[0],&luo_config.keymap_name,LUO_KEYMAP_NAME_SIZE);
+            memcpy(&data[2],&luo_config.keymap_name,LUO_KEYMAP_NAME_SIZE);
             break;
 
         case LUO_CMD_SET_KEYMAP_NAME:
@@ -118,4 +104,45 @@ void raw_hid_receive_kb(uint8_t *data, uint8_t length) {
             eeconfig_update_kb_datablock(&luo_config);
             break;
     }
+}
+
+static uint8_t broadcast_data[32];
+
+static void broadcast(void) {
+    broadcast_data[0] = LUO_PREFIX & 0xFF;
+    broadcast_data[1] = LUO_CMD_BROADCAST & 0xFF;
+    raw_hid_send(broadcast_data,32);
+}
+
+void on_matrix_changed(matrix_row_t matrix[]) {
+    if(!broadcast_flag) {
+        return;
+    }
+
+    // start:   modified quantum/via.c:250
+    if (!vial_unlocked)
+        return;
+
+    uint8_t i = 2;
+    for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
+        matrix_row_t value = matrix[row];
+        broadcast_data[i++] = value & 0xFF;
+        if(row==4){
+            uprintf("%u\n",value);
+        }
+    }
+    // end
+    broadcast();
+}
+
+void post_process_record_kb(uint16_t keycode, keyrecord_t* record) {
+    if(!broadcast_flag) {
+        return;
+    }
+    uint16_t state = layer_state | default_layer_state;
+    broadcast_data[13] = (state >> 8) & 0xFF;
+    broadcast_data[14] = state & 0xFF;
+    broadcast_data[15] = get_mods() & 0xFF;
+    broadcast_data[16] = get_oneshot_mods() & 0xFF;
+    broadcast();
 }

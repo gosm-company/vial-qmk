@@ -8,7 +8,6 @@
 #include "gpio.h"
 #include "keyboard.h"
 #include "matrix.h"
-#include "print.h"
 
 static const pin_t row_pins[MATRIX_ROWS] = MATRIX_ROW_PINS;
 static const pin_t col_pins[MATRIX_COLS] = MATRIX_COL_PINS;
@@ -53,6 +52,8 @@ matrix_row_t read_row(void) {
     return row;
 }
 
+__attribute__((weak)) void on_matrix_changed(matrix_row_t matrix[]) {}
+
 bool matrix_scan_custom(matrix_row_t current_matrix[]) {
     bool changed = false;
 
@@ -67,6 +68,10 @@ bool matrix_scan_custom(matrix_row_t current_matrix[]) {
         setPinOutput_writeHigh(row_pin);
 
         wait_us(100);
+    }
+
+    if(changed) {
+        on_matrix_changed(current_matrix);
     }
 
     return changed;
